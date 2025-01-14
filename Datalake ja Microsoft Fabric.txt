@@ -1,0 +1,279 @@
+DP-601
+
+DP-601Y00A. Implementing a Lakehouse with Fabric
+
+Datalake paikka, jossa tietoa jaetaan oikeuksien perusteella.
+
+***************
+Tools and techinques to explore and transform data:
+Apache Spark
+- notebooks
+- spark jobs definitions
+SQL Endpoint
+Dataflows (Gen2)
+Data Pipelines
+
+Visualize lakehouse data using Power BI
+***************
+tehtävä1:
+https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/01-lakehouse.html
+- tehdään lakehouse ja haetaan sinne dataa, tehdään sql kysely ja visualisointi ja tallennetaan malli
+
+tehtävä2: 
+https://microsoftlearning.github.io/mslearn-fabric/Instructions/Labs/02-analyze-spark.html
+
+
+**************
+Normaali tietokanta vs. DW
+DW: Relaatiotietokantaversion päälle rakennetaan layer, joka mahdollistaa paljon yhteyksiä.
+- rajapinta eli yhteydenottokerros mahdollistaa sen, että resurssit riittää paremmmin.
+(oma: Missä raja? Milloin dw?)
+**************
+
+Partition the output file
+- partition data by one or more columns
+- distribute data to improve performance and scalability
+
+df.write.partitionBy("Year".mode("overwrite").parquet("/data")
+tallennus suoraan parquet formaatissa vuosittain
+--> esim. myyntidata vuosi/kk, jota tallentuu jatkuvasti
+
+
+Spark SQL
+Use the metastore to define tables and views
+# Create a view in the metasrore
+df.createOrReplaceTemsView("products_view)
+or
+Create extrenal tables
+
+Query data using the Spark SQL API
+
+
+***************
+
+Apache Spark
+- Each workspace is assigned a Spark cluster
+- Worspace admins can manage setting for the Spark cluster in the Workspace settings
+- SPecific configuration settings include:
+---- Node family (esim memory optimized)
+---- Runtime version
+---- Spark properties
+
+
+Run Spark in Fabric - vaihtoehdot 
+1) Notebook (testaus ja kokeilu- kielen voi valita, esim. PySpark eli python -> käyttää kerneliä ja voi tietty resetoida) 
+-> voi avata myös VS Codessa
+2) Spark Job Definition (automaatio - define, schedule and manage your Apache Spark jobs for big data processing)
+>>> Non-interactive script run in Spark at a scheduled time
+
+****************
+Spark dataframe
+Load data in a Spark dataframe
+Schema can be either inferred of specified
+
+--> voidaan tehdä myös python ja pandas ja saadaan python df
+
+TAUSTAA SPARKILLE
+Pilviympäristössä eli virtuaalipalvelinmaailmassa...
+Spark on yksi frameworkeistä, joita voi asentaa palvelimelle.
+Monipuolinen ja tuttu, koska käytetty myös on premises -maailmassa-
+Jos ei spark ole tuttu, vaihtoehtoja on paljon.
+Voi tehdä vain pythonillakin, mutta vaatii kirjastojen lataamista, jotta voi toimia.
+Voidaan tehdä myös R-kielellä.
+
+esim. Hadoop ollut iso data-analytiikkaklusteriympäristöjen rakennustyökalu
+
+****************
+(Microsoft) Azure - analytiikka toimii suoraan
+(Amazon) AWS - Lakeformation - objekteista layereillä roolit jne.
+(Google) Google Cloud - sis analytiikka
+
+datasta luodaan virtuaalisia ympäristöjä, joihin kyselyitä voidaan kohdistaa
+
+Muut pilviympäristöt eivät pidä sisällään analytiikkaa samalla tavoin.
+esim. Oracle tai IBM
+
+***************
+draw.io
+https://app.diagrams.net/?src=about
+- eri datalähteitä kuvataan purkeilla, esim. sähködata, Fingrid ja säädata, ilmatieteenlaitos
+- storage account - objekti löytyy draw.io:sta haullla
+
+****************
+
+Real-Time Analytics
+esim. IOT-data ja reaaliaikainen reagointi ja venttiilien säätö datan perusteella.
+
+Data Activator
+Real-time detection and monitoring of data that can trigger notifications and ations when it finds specified patterns in data.
+
+- mikä ero näillä kahdella?
+
+****************************
+What is Azure Storage Account?
+- objekti, joka voidaan luoda
+- sisältää esim. containerin (johon tuodaan esim. erilaisia datalähteitä), tiedostojaon, jonot ja taulut
+- esim. järjestelmän loki-data tuodaan containeriin
+->> näin tuomalla eri datalähteiden dataa containeriin, muodostuu datalake
+
+huom! storage class: tilojen hallinta eri hintaisista tiloista toiseen - esim. halvin on arkistointi
+huom! nopeus: mahdollisuus ostaa eri nopeustasoja - std perus vs. premium nopea
+huom! tiedostomuoto: "parquis"?????? csv-tieto vie paljon tilaa ja täytyy lukea kokonaan-
+jos datan vois tallentaa "parquis"-muodossa, vie vähemmän tilaa ja nopeampi hakea + hintavaikutus
+****************************
+MS DataLake
+The default storage format for OneLake is Delta Parquet, an open-source storage layer that brings reliability to data lakes.
+
+Parquetin edut verrattuna CSV-muotoon:
+Parempi tiedon tiivistys (kompressio):
+
+Parquet käyttää sarakepohjaista tallennustapaa, mikä mahdollistaa paremman pakkaussuhteen erityisesti suurissa tietojoukoissa.
+Parquet tukee myös useita pakkausalgoritmeja, kuten Snappy, Gzip ja Zstd.
+Nopeampi haku ja käsittely:
+
+Sarakepohjaisen rakenteen ansiosta analysoitavia sarakkeita ei tarvitse lukea kokonaan, mikä tekee analyysistä nopeampaa.
+Rakenteellinen data:
+
+Parquet säilyttää datan skeeman (sarakenimet ja tietotyypit), mikä helpottaa tiedon käyttöä esimerkiksi Pythonin, R:n tai SQL:n kautta.
+Yhteensopivuus:
+
+Parquet on yhteensopiva monien työkalujen kanssa, kuten Pandas, PySpark, Hive, Azure Synapse, ja BigQuery.
+Kustannustehokkuus:
+
+Vähemmän tilaa vievät tiedostot tarkoittavat pienempiä tallennus- ja siirtokustannuksia pilvipalveluissa.
+CSV-tiedon muuntaminen Parquet-muotoon Pythonilla
+Esimerkki CSV-tiedoston muuntamisesta Parquetiksi Pandas-kirjastolla:
+
+python
+Kopioi koodi
+import pandas as pd
+
+# Lataa CSV-tiedosto
+csv_file = "data.csv"
+df = pd.read_csv(csv_file)
+
+# Tallenna Parquet-muotoon
+parquet_file = "data.parquet"
+df.to_parquet(parquet_file, engine='pyarrow', compression='snappy')
+
+print(f"Data tallennettu Parquet-muotoon: {parquet_file}")
+Parquetin tallennus ja siirto pilvessä:
+Jos käytät Azurea:
+
+Azure Data Lake: Voit tallentaa Parquet-tiedostoja Azure Data Lakeen ja käsitellä niitä esimerkiksi Azure Synapse Analyticsilla tai Databricksillä.
+Azure Data Factory: Voit käyttää tätä työkalua CSV:n muuntamiseen Parquetiksi ja tiedon siirtämiseen pilveen.
+Parquet on erinomainen valinta, jos haluat säästää tallennustilaa ja optimoida datan käsittelyn kustannuksia ja nopeutta!
+
+**************
+
+
+
+
+
+
+
+*************
+
+Converting your data architecture into a data mesh concept on Azure with tools like Azure Data Lake and Azure Synapse Analytics (data warehouse tools) involves a paradigm shift toward decentralized data ownership and self-serve capabilities. Here's a step-by-step guide:
+
+1. Understand the Data Mesh Principles
+Domain-Oriented Ownership: Data is owned and managed by the domain teams closest to it.
+Data as a Product: Each dataset is treated as a product, with discoverability, quality, and usability as key focus areas.
+Self-Serve Data Infrastructure: Teams can autonomously consume and produce data using standard tools and frameworks.
+Federated Computational Governance: Governance policies are applied centrally but executed locally.
+2. Set Up Domain-Oriented Ownership
+Organize by Domains: Break your organization into domains aligned with business functions (e.g., sales, marketing, finance).
+Domain-Specific Data Stores: Use Azure Data Lake to store raw and processed data per domain in segregated containers.
+Example:
+sales-data/raw
+sales-data/processed
+marketing-data/raw
+Account Ownership: Assign ownership of these data stores to domain-specific teams.
+3. Data as a Product
+Define Data Products:
+Each domain delivers data products, such as datasets, APIs, or reports, with well-defined interfaces.
+Cataloging and Discoverability:
+Use Azure Purview to catalog and document data products, ensuring discoverability and lineage tracking.
+SLAs for Data Products:
+Define SLAs for freshness, quality, and accessibility.
+4. Build a Self-Serve Data Infrastructure
+Centralized Platform with Decentralized Access:
+Use Azure Data Lake as the centralized repository for raw and processed data.
+Enable domains to access Azure Synapse Analytics for querying and transforming their data.
+Tools for Transformation:
+Use Azure Synapse Pipelines or Data Factory for ETL/ELT workflows.
+Enable self-service data visualization with Power BI.
+Automation:
+Deploy reusable templates for domain teams to onboard their data quickly.
+Leverage Azure DevOps for CI/CD of data pipelines.
+5. Federated Computational Governance
+Centralized Policy Definition:
+Use Azure Policy to enforce governance rules, such as access control and data compliance.
+Data Security:
+Implement role-based access control (RBAC) in Azure Data Lake and Synapse.
+Use Azure Key Vault for managing sensitive credentials.
+Monitoring and Observability:
+Monitor data pipelines and quality with Azure Monitor and custom logging frameworks.
+Metadata Governance:
+Leverage Azure Purview to maintain data governance and metadata consistency.
+6. Enable Interoperability
+Standardized Data Formats:
+Use open formats like Parquet, Avro, or JSON to store data for easy sharing across domains.
+APIs for Access:
+Build data access APIs with Azure API Management to enable consistent access across domains.
+Event-Driven Architecture:
+Use Azure Event Grid or Azure Service Bus to share real-time updates between domains.
+7. Continuous Improvement
+Feedback Loops:
+Collect feedback from domain teams to improve self-serve capabilities and usability.
+Iterative Development:
+Start small with a pilot domain, and gradually onboard others into the data mesh framework.
+Example Architecture on Azure
+Ingestion:
+Use Azure Data Factory or Event Hub to collect data into Azure Data Lake.
+Storage:
+Organize Azure Data Lake into domain-specific zones (e.g., raw, processed, curated).
+Transformation:
+Process data using Azure Synapse Analytics, Databricks, or domain-specific tools.
+Consumption:
+Provide access via Power BI, Synapse Analytics, or APIs.
+Governance:
+Centralized cataloging in Azure Purview with decentralized policy execution.
+By applying these principles and leveraging Azure’s ecosystem, you can effectively implement a data mesh architecture that promotes scalability, agility, and domain autonomy.
+
+
+
+
+
+
+
+
+
+
+**************************
+
+Non-relational data, which is often stored in NoSQL databases or unstructured formats, can be utilized in various types of machine learning. The key is to preprocess and transform the data into a usable form, such as vectors or tensors. Here are some machine learning types that can work well with non-relational data:
+
+1. Supervised Learning
+Text Data (Natural Language Processing): Tasks like text classification, sentiment analysis, and language translation often use non-relational text data.
+Image Data (Computer Vision): Images stored as files can be used for tasks like object detection, image classification, and facial recognition.
+Tabular Data in NoSQL Databases: Data from document-based stores like MongoDB can be converted to structured formats for regression or classification tasks.
+2. Unsupervised Learning
+Clustering: Non-relational data, such as logs or JSON objects, can be used for clustering tasks to find patterns or segment data.
+Dimensionality Reduction: High-dimensional unstructured data like text embeddings or image features can be reduced to identify key patterns.
+3. Deep Learning
+Recurrent Neural Networks (RNNs) / Transformers: Sequential non-relational data, such as time series or text, can be used for tasks like speech recognition or sequence prediction.
+Convolutional Neural Networks (CNNs): Used for processing non-relational image data.
+Autoencoders: Useful for anomaly detection or feature extraction from non-relational data.
+4. Reinforcement Learning
+Non-relational data from simulations, such as logs or game states, can be used for training agents in environments where data is inherently unstructured.
+5. Graph Machine Learning
+Non-relational data stored as graphs (e.g., in graph databases like Neo4j) can be used in graph neural networks for tasks like link prediction and node classification.
+6. Generative Models
+Models like GANs (Generative Adversarial Networks) or VAEs (Variational Autoencoders) can generate new data from unstructured formats, such as synthesizing images or text.
+Preprocessing Techniques for Non-Relational Data:
+Text: Tokenization, word embeddings (e.g., Word2Vec, GloVe, BERT).
+Images: Normalization, resizing, and data augmentation.
+JSON/Key-Value: Parsing and converting to structured features.
+Time Series: Feature extraction, windowing, and scaling.
+With effective preprocessing and the appropriate machine learning model, non-relational data can be leveraged for a wide variety of machine learning tasks.
