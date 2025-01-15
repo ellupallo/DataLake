@@ -1,0 +1,56 @@
+Päivä 2 Datawarehouse DP602
+Hannu Kauremaa 15.1.2025
+
+Datawarehouse on klusteri.
+Voit luoda suuren käytettävyyden yhdyskäytäväasennuksia. 
+Klustereiden avulla voit varmistaa, että organisaatiosi voi käyttää pilvipalveluiden, kuten Power BI:n ja Power Appsin, paikallisia tietoresursseja. 
+Yhdyskäytävän järjestelmänvalvojat käyttävät tällaisia klustereita välttääkseen yksittäisiä vikaantumispisteitä käytettäessä paikallisia tietoresursseja. 
+Jokainen klusteri voi tukea enintään kymmentä yhdyskäytävän jäsentä.
+Yhdyskäytävän pilvipalvelu käyttää aina klusterin ensisijaista yhdyskäytävää, ellei kyseinen yhdyskäytävä ole käytettävissä. 
+Tässä tapauksessa palvelu vaihtaa klusterin seuraavaan käytettävissä olevaan yhdyskäytävään. 
+Jokainen klusteri tukee enintään 10 yhdyskäytävän jäsentä (joita kutsutaan joskus solmuiksi).
+
+Datawarehousessa kolme tasoa:
+1 Control Plane
+2 RDS - remote desktop services eli nodet. (voi joutua määrittelemään --> AWS  tai on automaattisesti skaalautuva eli serverless -> näin Microsoftilla)
+3 Data
+
+DW logiikka
+- Data ingestion
+- Data storage
+- Data processing
+- Data analysis and delivery
+
+Kauremaa: historiadata arkistoituna, vain aktiividata nopeassa käytössä
+esim. Mallia varten data arkistoista, malli hyödyntää aktiividataa...
+- hot
+- cool
+- cold - pitkäaikainen arkisto
+- deep (AWS) - vielä syvemmällä...
+
+DW vs Datalake -> 
+- dw-kustannuksiin sisältyy analytiikka
+--> millä analytiikkatalot kilpailevat?
+- DW vaatii relaatiotietokannan
+- rakentamisessa vähennetään linkkien määrä, sama tieto useaan kertaan, mutta ei haittaa
+
+Data ingestion
+- Fabric piplelines
+- Fabric Dataflows Gen2
+- Cross database querying --> esim. non-sql dataan, jota ei haluta tuoda datawarehouseen
+- COPY INTO command
+
+Cloning data eli näkymät > voi tutkia rauhassa ilman että pulmia
+
+
+Taulu, vakuutusyhtiön vahingonkorvausten tiedot ( supplier attribute details for aggregating claims)
+1) Fact table --ei ole olemassa
+2) Dimension table esim. time dimensions, slowly changing dimensions esim. asiakkaan osoite tai tuotteen hinta
+3) Staging Table
+
+Item persmission = annetaan yksittäisiä oikeuksia tiettyyn toiminnallisuuteen
+
+Yksi mahdollinen DW-schema on snowflake schema. Hyödyllinen erityisesti, 
+jos tieto on monitasoista tai jos sama tietoa tarvitaan useassa eri paikassa.
+
+
